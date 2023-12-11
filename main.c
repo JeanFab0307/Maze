@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include <string.h>
 #include "maze.h"
 
 int init_instance(SDL_Instance *instance);
@@ -32,7 +33,8 @@ int main(void)
 
 	while ("gg")
 	{
-		SDL_SetRenderDrawColor(instance.renderer, 0, 0, 0, 0);
+		//SDL_SetRenderDrawColor(instance.renderer, 0, 0, 0, 0);
+		set_color(&instance, "red");
 		SDL_RenderClear(instance.renderer);
 		if (poll_events(&player, map) == 1)
 			break;
@@ -100,4 +102,25 @@ void init_player(SDL_Player *player, float x, float y, float angle, float FOV)
 	player->y = y * BOXSIZE + BOXSIZE / 2;
 	player->angle = angle;
 	player->FOV = FOV;
+}
+
+void set_color(SDL_Instance *instance, char *color)
+{
+	int i = 0;
+	color_t colors[] = {
+		{"red", {15, 65, 98, 255}},
+		{"blue", {2, 56, 98, 255}},
+		{NULL, {255, 255, 255, 255}}
+		};
+
+	while (colors[i].name)
+	{
+		if (strcmp(color, colors[i].name) == 0)
+		{
+			break;
+		}
+		i++;
+	}
+	SDL_SetRenderDrawColor(instance->renderer, colors[i].RGB[0], 
+	colors[i].RGB[1], colors[i].RGB[2], colors[i].RGB[3]);
 }

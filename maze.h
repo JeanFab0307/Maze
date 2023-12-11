@@ -35,8 +35,15 @@ typedef struct SDL_Player
 	float FOV;
 } SDL_Player;
 
+typedef struct color
+{
+	char *name;
+	int RGB[4];
+} color_t;
+
 int poll_events(SDL_Player *player, int map[ROWS][COLS]);
 void draw_map(SDL_Instance instance, int map[ROWS][COLS]);
 void draw_player(SDL_Instance instance, SDL_Player *player);
 void raycasting(SDL_Instance instance, SDL_Player *player, int map[ROWS][COLS]);
+void set_color(SDL_Instance *instance, char *color);
 #endif

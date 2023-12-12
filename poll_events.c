@@ -11,7 +11,7 @@ void search_collision_y(SDL_Player *player, int map[ROWS][COLS], float paceY);
  * Return: 1 if the action is meant to exit the program
  * Or 0 for other actions
  */
-int poll_events(SDL_Player *player, int map[ROWS][COLS])
+int poll_events(SDL_Player *player, int map[ROWS][COLS], SDL_bool *minimap)
 {
 	SDL_Event event;
 	SDL_KeyboardEvent key;
@@ -46,10 +46,16 @@ int poll_events(SDL_Player *player, int map[ROWS][COLS])
 				paceY = 4 * sin(player->angle + PI / 2);
 				break;
 			case SDL_SCANCODE_LEFT:
-				player->angle -= PI / 50.0;
+				player->angle -= PI / 40.0;
 				break;
 			case SDL_SCANCODE_RIGHT:
-				player->angle += PI / 50.0;
+				player->angle += PI / 40.0;
+				break;
+			case SDL_SCANCODE_M:
+				if (*minimap == SDL_TRUE)
+					*minimap = SDL_FALSE;
+				else
+					*minimap = SDL_TRUE;
 				break;
 			}
 			search_collision_x(player, map, paceX);
@@ -96,7 +102,7 @@ void search_collision_y(SDL_Player *player, int map[ROWS][COLS], float paceY)
 		hit = 1;
 		player->y = tmp - paceY;
 	}
-	
+
 	if (hit == 0)
 	{
 		player->y = tmp + paceY;

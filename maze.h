@@ -2,7 +2,6 @@
 #define MAZE_H
 
 #include <SDL2/SDL.h>
-
 #define ROWS 10
 #define COLS 10
 #define BOXSIZE 32 /*how big a case in the map is in pixel*/
@@ -41,7 +40,7 @@ typedef struct color
 	int RGB[4];
 } color_t;
 
-int poll_events(SDL_Player *player, int map[ROWS][COLS]);
+int poll_events(SDL_Player *player, int map[ROWS][COLS], SDL_bool *minimap);
 void draw_map(SDL_Instance instance, int map[ROWS][COLS]);
 void draw_player(SDL_Instance instance, SDL_Player *player);
 void raycasting(SDL_Instance instance, SDL_Player *player, int map[ROWS][COLS]);

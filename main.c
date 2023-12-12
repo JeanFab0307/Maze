@@ -14,6 +14,7 @@ int main(void)
 {
 	SDL_Instance instance;
 	SDL_Player player;
+	SDL_bool minimap = SDL_TRUE;
 	int map[ROWS][COLS] = {
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -21,7 +22,7 @@ int main(void)
 				{1, 0, 0, 1, 1, 0, 0, 0, 0, 1},
 				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+				{1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
 				{1, 0, 0, 1, 0, 0, 1, 0, 0, 1},
 				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -34,13 +35,16 @@ int main(void)
 	while ("gg")
 	{
 		//SDL_SetRenderDrawColor(instance.renderer, 0, 0, 0, 0);
-		set_color(&instance, "red");
+		set_color(&instance, "");
 		SDL_RenderClear(instance.renderer);
-		if (poll_events(&player, map) == 1)
+		if (poll_events(&player, map, &minimap) == 1)
 			break;
-		draw_map(instance, map);
-		draw_player(instance, &player);
 		raycasting(instance, &player, map);
+		if (minimap != 0)
+		{
+			draw_map(instance, map);
+			draw_player(instance, &player);
+		}
 		SDL_RenderPresent(instance.renderer);
 	}
 	SDL_DestroyRenderer(instance.renderer);
@@ -108,9 +112,16 @@ void set_color(SDL_Instance *instance, char *color)
 {
 	int i = 0;
 	color_t colors[] = {
-		{"red", {15, 65, 98, 255}},
-		{"blue", {2, 56, 98, 255}},
-		{NULL, {255, 255, 255, 255}}
+		{"red", {255, 17, 17, 255}},
+		{"blue", {153, 204, 255, 255}},
+		{"green", {0, 204, 0, 255}},
+		{"yellow", {255, 255, 0, 255}},
+		{"grey", {128, 128, 128, 255}},
+		{"white", {255, 255, 255, 255}},
+		{"purple", {127, 0, 255, 255}},
+		{"dark green", {0, 51, 0, 255}},
+		{"black", {0, 0, 0, 255}},
+		{NULL, {0, 0, 0, 255}}
 		};
 
 	while (colors[i].name)

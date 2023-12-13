@@ -2,8 +2,8 @@
 #include <math.h>
 #include "maze.h"
 
-void search_collision_x(SDL_Player *player, int map[ROWS][COLS], float paceX);
-void search_collision_y(SDL_Player *player, int map[ROWS][COLS], float paceY);
+void search_collision_x(SDL_Player *player, map_t map, float paceX);
+void search_collision_y(SDL_Player *player, map_t map, float paceY);
 
 /**
  * poll_events - retrieve events
@@ -11,7 +11,7 @@ void search_collision_y(SDL_Player *player, int map[ROWS][COLS], float paceY);
  * Return: 1 if the action is meant to exit the program
  * Or 0 for other actions
  */
-int poll_events(SDL_Player *player, int map[ROWS][COLS], SDL_bool *minimap)
+int poll_events(SDL_Player *player, map_t map, SDL_bool *minimap)
 {
 	SDL_Event event;
 	SDL_KeyboardEvent key;
@@ -65,7 +65,7 @@ int poll_events(SDL_Player *player, int map[ROWS][COLS], SDL_bool *minimap)
 	}
 	return (0);
 }
-void search_collision_x(SDL_Player *player, int map[ROWS][COLS], float paceX)
+void search_collision_x(SDL_Player *player, map_t map, float paceX)
 {
 	int row, col, hit;
 	float x1, tmp;
@@ -75,7 +75,7 @@ void search_collision_x(SDL_Player *player, int map[ROWS][COLS], float paceX)
 	row = player->y / BOXSIZE;
 	col = x1 / BOXSIZE;
 	hit = 0;
-	if (map[row][col] != 0)
+	if (map.layout[row][col] != 0)
 	{
 		hit = 1;
 		player->x = tmp - paceX;
@@ -87,7 +87,7 @@ void search_collision_x(SDL_Player *player, int map[ROWS][COLS], float paceX)
 	}
 }
 
-void search_collision_y(SDL_Player *player, int map[ROWS][COLS], float paceY)
+void search_collision_y(SDL_Player *player,map_t map, float paceY)
 {
 	int row, col, hit;
 	float y1, tmp;
@@ -97,7 +97,7 @@ void search_collision_y(SDL_Player *player, int map[ROWS][COLS], float paceY)
 	row = y1 / BOXSIZE;
 	col = player->x / BOXSIZE;
 	hit = 0;
-	if (map[row][col] != 0)
+	if (map.layout[row][col] != 0)
 	{
 		hit = 1;
 		player->y = tmp - paceY;

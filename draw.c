@@ -3,12 +3,12 @@
 #include "maze.h"
 
 float calc_lenght(float x, float y);
-float calc_impact(SDL_Instance inst, SDL_Player *player, int map[ROWS][COLS]);
-float calc_impact_row(SDL_Player *player, int map[ROWS][COLS]);
-float calc_impact_col(SDL_Player *player, int map[ROWS][COLS]);
+float calc_impact(SDL_Instance inst, SDL_Player *player, map_t map);
+float calc_impact_row(SDL_Player *player, map_t map);
+float calc_impact_col(SDL_Player *player, map_t map);
 void render_FOV(SDL_Instance instance, SDL_Player *player, float lenght);
 
-void draw_map(SDL_Instance instance, int map[ROWS][COLS])
+void draw_map(SDL_Instance instance, map_t map)
 {
 	SDL_Rect rect;
 	int i, j, hit;
@@ -21,7 +21,7 @@ void draw_map(SDL_Instance instance, int map[ROWS][COLS])
 	{
 		for (j = 0; j < COLS; j++)
 		{
-			if (map[i][j] == 0)
+			if (map.layout[i][j] == 0)
 				set_color(&instance, "green");
 			else
 				set_color(&instance, "white");
@@ -51,7 +51,7 @@ void draw_player(SDL_Instance instance, SDL_Player *player)
 	SDL_RenderDrawLineF(instance.renderer, x0, y0, x1, y1);
 }
 
-void raycasting(SDL_Instance instance, SDL_Player *player, int map[ROWS][COLS])
+void raycasting(SDL_Instance instance, SDL_Player *player, map_t map)
 {
 	float lenght, tmp = player->angle;
 	float i, lineHeight,start, end;
@@ -91,13 +91,13 @@ void render_FOV(SDL_Instance instance, SDL_Player *player, float lenght)
 	SDL_RenderDrawLineF(instance.renderer, x0, y0, x1, y1);
 }
 
-float calc_impact(SDL_Instance inst,SDL_Player *player, int map[ROWS][COLS])
+float calc_impact(SDL_Instance inst,SDL_Player *player, map_t map)
 {
 	float real_lenght, lenght0, lenght1;
 
 	lenght0 = calc_impact_row(player, map);
 	lenght1 = calc_impact_col(player, map);
-	if (lenght0 <= lenght1)
+	if (lenght0 < lenght1)
 	{
 		real_lenght = lenght0;
 		set_color(&inst, "green");
@@ -117,10 +117,10 @@ float calc_lenght(float x, float y)
 	return (sqrt(x + y));
 }
 
-float calc_impact_row(SDL_Player *player, int map[ROWS][COLS])
+float calc_impact_row(SDL_Player *player, map_t map)
 {
 	int i, hit, mapY, row, col;
-	float x0, y0, x1, y1;
+	double x0, y0, x1, y1;
 
 
 	x0 = player->x, y0 = player->y;
@@ -132,11 +132,11 @@ float calc_impact_row(SDL_Player *player, int map[ROWS][COLS])
 		if (sin(player->angle) >= 0)
 		{
 			y1 = (mapY + 1 + i) * BOXSIZE;
-			x1 = abs(y1 - y0) / tan(player->angle) + x0;
+			x1 = abs(y1 - y0) / tan(player->angle) + x0 ;
 			row = y1 / BOXSIZE, col = x1 / BOXSIZE;
 			if ((row < 0 || row >= ROWS) || (col < 0 || col >= COLS))
 				hit = 1;
-			else if (map[row][col] != 0)
+			else if (map.layout[row][col] != 0)
 				hit = 1;
 		}
 		else
@@ -144,19 +144,24 @@ float calc_impact_row(SDL_Player *player, int map[ROWS][COLS])
 			y1 = (mapY - i) * BOXSIZE;
 			x1 = -abs(y1 - y0) / tan(player->angle) + x0;
 			row = y1 / BOXSIZE, col = x1 / BOXSIZE;
+			if (col == x1 / BOXSIZE)
+			{
+				x1 -= 1;
+				col = x1 / BOXSIZE;
+			}
 			if ((row < 0 || row >= ROWS) || (col < 0 || col >= COLS))
 				hit = 1;
-			else if (map[row - 1][col] != 0)
+			else if (map.layout[row - 1][col] != 0)
 				hit = 1;
 		}
 		i++;
 	}
 	return (calc_lenght((x0 - x1), (y0 - y1)));
 }
-float calc_impact_col(SDL_Player *player, int map[ROWS][COLS])
+float calc_impact_col(SDL_Player *player,map_t map)
 {
 	int i, hit, mapX, row, col;
-	float x0, y0, x1, y1;
+	double x0, y0, x1, y1;
 
 	x0 = player->x, y0 = player->y;
 	mapX = player->x / BOXSIZE;
@@ -171,7 +176,7 @@ float calc_impact_col(SDL_Player *player, int map[ROWS][COLS])
 			row = y1 / BOXSIZE, col = x1 / BOXSIZE;
 			if ((row < 0 || row >= ROWS) || (col < 0 || col >= COLS))
 				hit = 1;
-			else if (map[row][col] != 0)
+			else if (map.layout[row][col] != 0)
 				hit = 1;
 		}
 		else
@@ -181,7 +186,7 @@ float calc_impact_col(SDL_Player *player, int map[ROWS][COLS])
 			row = y1 / BOXSIZE, col = x1 / BOXSIZE;
 			if ((row < 0 || row >= ROWS) || (col < 0 || col >= COLS))
 				hit = 1;
-			else if (map[row][col - 1] != 0)
+			else if (map.layout[row][col - 1] != 0)
 				hit = 1;
 		}
 		i++;

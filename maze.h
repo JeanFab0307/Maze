@@ -40,9 +40,15 @@ typedef struct color
 	int RGB[4];
 } color_t;
 
-int poll_events(SDL_Player *player, int map[ROWS][COLS], SDL_bool *minimap);
-void draw_map(SDL_Instance instance, int map[ROWS][COLS]);
+typedef struct map_t
+{
+	int rows;
+	int cols;
+	int **layout;
+} map_t;
+int poll_events(SDL_Player *player, map_t map, SDL_bool *minimap);
+void draw_map(SDL_Instance instance, map_t map);
 void draw_player(SDL_Instance instance, SDL_Player *player);
-void raycasting(SDL_Instance instance, SDL_Player *player, int map[ROWS][COLS]);
+void raycasting(SDL_Instance instance, SDL_Player *player, map_t map);
 void set_color(SDL_Instance *instance, char *color);
 #endif

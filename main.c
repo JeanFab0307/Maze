@@ -1,10 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <string.h>
 #include "maze.h"
 
 int init_instance(SDL_Instance *instance);
 void init_player(SDL_Player *player, float X, float Y, float angle, float FOV);
+map_t init_map(void);
 /**
  * main - entry point in the program
  *
@@ -15,18 +17,7 @@ int main(void)
 	SDL_Instance instance;
 	SDL_Player player;
 	SDL_bool minimap = SDL_TRUE;
-	int map[ROWS][COLS] = {
-                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 1, 1, 0, 0, 0, 0, 1},
-				{1, 0, 0, 1, 1, 0, 0, 0, 0, 1},
-				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-				{1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
-				{1, 0, 0, 1, 0, 0, 1, 0, 0, 1},
-				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        };
+	map_t map = init_map();
 
 	if (init_instance(&instance) !=0)
 		return (1);
@@ -34,7 +25,6 @@ int main(void)
 
 	while ("gg")
 	{
-		//SDL_SetRenderDrawColor(instance.renderer, 0, 0, 0, 0);
 		set_color(&instance, "");
 		SDL_RenderClear(instance.renderer);
 		if (poll_events(&player, map, &minimap) == 1)
@@ -134,4 +124,36 @@ void set_color(SDL_Instance *instance, char *color)
 	}
 	SDL_SetRenderDrawColor(instance->renderer, colors[i].RGB[0], 
 	colors[i].RGB[1], colors[i].RGB[2], colors[i].RGB[3]);
+}
+
+map_t init_map(void)
+{
+	int i = 0, j = 0;
+	map_t *map;
+	int mapi[ROWS][COLS] = {
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 1, 1, 0, 0, 0, 0, 1},
+				{1, 0, 0, 1, 1, 0, 0, 0, 0, 1},
+				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+				{1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
+				{1, 0, 0, 1, 0, 0, 1, 0, 0, 1},
+				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	};
+
+	map = malloc(sizeof(map_t));
+	map->rows = 10;
+	map->cols = 10;
+	map->layout = malloc(8 * 11);
+	for (i = 0; i < 10; i++)
+	{
+		map->layout[i] = malloc(sizeof(int) * 11);
+		for (j = 0; j < 10; j++)
+		{
+			map->layout[i][j] = mapi[i][j];
+		}
+	}
+	return (*map);
 }

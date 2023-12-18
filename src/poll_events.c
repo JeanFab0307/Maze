@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
 #include <math.h>
-#include "maze.h"
+#include "../inc/maze.h"
 
 void search_collision_x(SDL_Player *player, map_t map, float paceX);
 void search_collision_y(SDL_Player *player, map_t map, float paceY);

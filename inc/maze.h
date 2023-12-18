@@ -2,8 +2,11 @@
 #define MAZE_H
 
 #include <SDL2/SDL.h>
-#define ROWS 10
-#define COLS 10
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#define MINIMAPW 200
+#define MINIMAPH 200
 #define BOXSIZE 32 /*how big a case in the map is in pixel*/
 #define PI 3.14159265
 
@@ -46,9 +49,26 @@ typedef struct map_t
 	int cols;
 	int **layout;
 } map_t;
+
 int poll_events(SDL_Player *player, map_t map, SDL_bool *minimap);
-void draw_map(SDL_Instance instance, map_t map);
-void draw_player(SDL_Instance instance, SDL_Player *player);
+
+void draw_map(SDL_Instance instance, SDL_Player *player, map_t map);
+
+void draw_player(SDL_Instance instance, SDL_Player *player, int width_ratio, int height_ratio);
 void raycasting(SDL_Instance instance, SDL_Player *player, map_t map);
 void set_color(SDL_Instance *instance, char *color);
+
+int init_instance(SDL_Instance *instance);
+void init_player(SDL_Player *player, float X, float Y, float angle, float FOV);
+map_t init_map(char *filename);
+
+void close_file(FILE *fp);
+FILE *open_file(char *filename);
+map_t read_file(FILE *fp);
+int count_rows(FILE *fp);
+
+float calc_lenght(float x, float y);
+float calc_impact(SDL_Instance inst, SDL_Player *player, map_t map);
+float calc_impact_row(SDL_Player *player, map_t map);
+float calc_impact_col(SDL_Player *player, map_t map);
 #endif

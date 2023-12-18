@@ -1,8 +1,7 @@
 CC = gcc
-INC = *.h
-SRC = *.c
-OBJ = $(SRC:.c=.o)
-NAME = game
+INC = inc/*.h
+SRC = src/*.c
+NAME = maze
 RM = rm -f
 CFLAGS = -Wall -Werror -Wextra -pedantic
 

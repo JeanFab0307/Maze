@@ -1,47 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <SDL2/SDL.h>
-#include <string.h>
-#include "maze.h"
-
-int init_instance(SDL_Instance *instance);
-void init_player(SDL_Player *player, float X, float Y, float angle, float FOV);
-map_t init_map(void);
-/**
- * main - entry point in the program
- *
- * Return: 0 on success else 1
- */
-int main(void)
-{
-	SDL_Instance instance;
-	SDL_Player player;
-	SDL_bool minimap = SDL_TRUE;
-	map_t map = init_map();
-
-	if (init_instance(&instance) !=0)
-		return (1);
-	init_player(&player, 6.0, 5.0, -PI / 2, PI / 3); /*the coordonates given are those in the maps*/
-
-	while ("gg")
-	{
-		set_color(&instance, "");
-		SDL_RenderClear(instance.renderer);
-		if (poll_events(&player, map, &minimap) == 1)
-			break;
-		raycasting(instance, &player, map);
-		if (minimap != 0)
-		{
-			draw_map(instance, map);
-			draw_player(instance, &player);
-		}
-		SDL_RenderPresent(instance.renderer);
-	}
-	SDL_DestroyRenderer(instance.renderer);
-	SDL_DestroyWindow(instance.window);
-	SDL_Quit();
-	return(0);
-}
+#include "../inc/maze.h"
 
 /**
  * init_instance - initialize an SDL instance and checks for error
@@ -92,8 +49,8 @@ int init_instance(SDL_Instance *instance)
  */
 void init_player(SDL_Player *player, float x, float y, float angle, float FOV)
 {
-	player->x = x * BOXSIZE + BOXSIZE / 2;
-	player->y = y * BOXSIZE + BOXSIZE / 2;
+	player->x = x * BOXSIZE;
+	player->y = y * BOXSIZE;
 	player->angle = angle;
 	player->FOV = FOV;
 }
@@ -125,35 +82,19 @@ void set_color(SDL_Instance *instance, char *color)
 	SDL_SetRenderDrawColor(instance->renderer, colors[i].RGB[0], 
 	colors[i].RGB[1], colors[i].RGB[2], colors[i].RGB[3]);
 }
-
-map_t init_map(void)
+/**
+ * handle_file - calls all file handling functions
+ * @filename: string pointer to file name
+ * Return: map_t datastructure of map information
+ */
+map_t init_map(char *filename)
 {
-	int i = 0, j = 0;
-	map_t *map;
-	int mapi[ROWS][COLS] = {
-                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 1, 1, 0, 0, 0, 0, 1},
-				{1, 0, 0, 1, 1, 0, 0, 0, 0, 1},
-				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-				{1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
-				{1, 0, 0, 1, 0, 0, 1, 0, 0, 1},
-				{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	};
+	FILE *fp = NULL;
+	map_t map;
 
-	map = malloc(sizeof(map_t));
-	map->rows = 10;
-	map->cols = 10;
-	map->layout = malloc(8 * 11);
-	for (i = 0; i < 10; i++)
-	{
-		map->layout[i] = malloc(sizeof(int) * 11);
-		for (j = 0; j < 10; j++)
-		{
-			map->layout[i][j] = mapi[i][j];
-		}
-	}
-	return (*map);
+	fp = open_file(filename);
+	map = read_file(fp);
+	close_file(fp);
+
+	return (map);
 }

@@ -7,6 +7,8 @@
 #include <string.h>
 #define MINIMAPW 200
 #define MINIMAPH 200
+#define SCREENWIDTH 1400
+#define SCREENHEIGHT 720
 #define BOXSIZE 32 /*how big a case in the map is in pixel*/
 #define PI 3.14159265
 
@@ -19,6 +21,7 @@ typedef struct SDL_Instance
 {
 	SDL_Window *window;
 	SDL_Renderer *renderer;
+	SDL_Texture *bmp;
 } SDL_Instance;
 
 /**
@@ -50,7 +53,18 @@ typedef struct map_t
 	int **layout;
 } map_t;
 
-int poll_events(SDL_Player *player, map_t map, SDL_bool *minimap);
+typedef struct status_t
+{
+	int minimap;
+	int weapon;
+	int lvl;
+	int new_lvl;
+	int quit;
+	double time;
+	double oldTime;
+} status_t;
+
+void poll_events(SDL_Player *player, map_t map, status_t *status);
 
 void draw_map(SDL_Instance instance, SDL_Player *player, map_t map);
 
@@ -71,4 +85,9 @@ float calc_lenght(float x, float y);
 float calc_impact(SDL_Instance inst, SDL_Player *player, map_t map);
 float calc_impact_row(SDL_Player *player, map_t map);
 float calc_impact_col(SDL_Player *player, map_t map);
+
+void draw_gun(SDL_Instance *instance);
+void draw_line(SDL_Instance instance, double lineHeight, int lineX);
+void load_image(SDL_Instance *instance, char *filename);
+void exit_game(SDL_Player *player, status_t *status, map_t map);
 #endif

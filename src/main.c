@@ -11,30 +11,63 @@ int main(void)
 {
 	SDL_Instance instance;
 	SDL_Player player;
+	status_t status = {0, 0, 0, 0, 0, 0, 0};
 	SDL_bool minimap = SDL_TRUE;
-	map_t map = init_map("maps/map");
+	map_t map;
 
 	if (init_instance(&instance) !=0)
 		return (1);
-	
-	init_player(&player, 6.0, 5.0, -PI / 2, PI / 3); 
+	while (!status.quit)
+	{
+		map = init_map("maps/map");
+	init_player(&player, map.cols - 1, map.rows - 1, -PI / 2, PI / 3); 
 	/*the coordonates given are those in the maps*/
 
-	while ("gg")
+	while (!status.quit && !status.new_lvl)
 	{
-		set_color(&instance, "");
+		set_color(&instance, "white");
 		SDL_RenderClear(instance.renderer);
-		if (poll_events(&player, map, &minimap) == 1)
-			break;
-		raycasting(instance, &player, map);
-		if (minimap != 0)
+		poll_events(&player, map, &status);
+		switch (status.lvl)
 		{
-			draw_map(instance, &player, map);
+			case 0:
+				load_image(&instance, "images/start.bmp");
+				break;
+			case 1:
+				instance.bmp = NULL;
+				raycasting(instance, &player, map);
+				if (status.minimap != 0)
+				{
+					draw_map(instance, &player, map);
+				}
+				if (status.weapon != 0)
+				{
+					draw_gun(&instance);
+				}
+				exit_game(&player, &status, map);
+				break;
+			case 2:
+				load_image(&instance, "images/end.bmp");
+				break;
+			case 3:
+				status.quit = 1;
 		}
 		SDL_RenderPresent(instance.renderer);
+	}
+	status.new_lvl = 0;
 	}
 	SDL_DestroyRenderer(instance.renderer);
 	SDL_DestroyWindow(instance.window);
 	SDL_Quit();
 	return(0);
+}
+
+void exit_game(SDL_Player *player, status_t *status, map_t map)
+{
+	int row, col;
+
+	row = player->x / BOXSIZE;
+	col = player->x / BOXSIZE;
+	if (map.layout[row][col] == 5)
+		status->lvl += 1;
 }

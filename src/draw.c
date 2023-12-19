@@ -16,6 +16,8 @@ void draw_map(SDL_Instance instance, SDL_Player *player, map_t map)
 		{
 			if (map.layout[i][j] == 0)
 				set_color(&instance, "green");
+			else if (map.layout[i][j] == 5)
+				set_color(&instance, "yellow");
 			else
 				set_color(&instance, "white");
 			SDL_RenderFillRect(instance.renderer, &rect);
@@ -48,27 +50,34 @@ void draw_player(SDL_Instance instance, SDL_Player *player, int width_ratio, int
 void raycasting(SDL_Instance instance, SDL_Player *player, map_t map)
 {
 	float lenght, tmp = player->angle;
-	float i, lineHeight,start, end;
-	int j, h = 720;
+	float i, lineHeight;
+	int j;
 
 	j = 0;
-	for (i = -player->FOV / 2; i <= player->FOV / 2; i += player->FOV / 1260)
+	for (i = -player->FOV / 2; i <= player->FOV / 2; i += player->FOV / SCREENWIDTH)
 	{
-		j++;
+		j += 1;
 		player->angle = tmp + i;
 		lenght = calc_impact(instance, player, map);
-		lineHeight = h / ((lenght * cos(i)) / BOXSIZE);
-		start = -lineHeight / 2 + h / 2;
-		end = lineHeight / 2 + h / 2;
-		if (start < 0)
-			start = 0;
-		if (end >= h)
-			end = h - 1;
-		SDL_RenderDrawLineF(instance.renderer, j, start, j, end);
-		set_color(&instance, "blue");
-		SDL_RenderDrawLineF(instance.renderer, j, 0, j, start);
-		set_color(&instance, "purple");
-		SDL_RenderDrawLineF(instance.renderer, j, end, j, h);
+		lineHeight = SCREENHEIGHT / ((lenght * cos(i)) / BOXSIZE);
+		draw_line(instance, lineHeight, j);
 	}
 	player->angle = tmp;
+}
+
+void draw_line(SDL_Instance instance, double lineHeight, int lineX)
+{
+	float start, end;
+
+	start = -lineHeight / 2 + SCREENHEIGHT / 2;
+	end = lineHeight / 2 + SCREENHEIGHT / 2;
+	if (start < 0)
+		start = 0;
+	if (end >= SCREENHEIGHT)
+		end = SCREENHEIGHT - 1;
+	SDL_RenderDrawLineF(instance.renderer, lineX, start, lineX, end);
+	set_color(&instance, "blue");
+	SDL_RenderDrawLineF(instance.renderer, lineX, 0, lineX, start);
+	set_color(&instance, "purple");
+	SDL_RenderDrawLineF(instance.renderer, lineX, end, lineX, SCREENHEIGHT);
 }

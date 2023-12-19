@@ -46,17 +46,17 @@ float calc_impact_row(SDL_Player *player, map_t map)
 			
 			if ((row < 0 || row >= map.rows) || (col < 0 || col >= map.cols))
 				hit = 1;
-			else if (map.layout[row][col] != 0)
+			if (map.layout[row][col] != 0 && map.layout[row][col] != 5)
 				hit = 1;
 		}
 		else
 		{
-			y1 = (mapY - i) * BOXSIZE ;
+			y1 = (mapY - i) * BOXSIZE;
 			x1 = -abs(y1 - y0) / tan(player->angle) + x0;
 			row = y1 / BOXSIZE, col = x1 / BOXSIZE;
 			if ((row < 0 || row >= map.rows) || (col < 0 || col >= map.cols))
 				hit = 1;
-			else if (map.layout[row - 1][col] != 0)
+			else if (map.layout[row - 1][col] != 0  && map.layout[row - 1][col] != 5)
 				hit = 1;
 		}
 		i++;
@@ -81,7 +81,7 @@ float calc_impact_col(SDL_Player *player,map_t map)
 			row = y1 / BOXSIZE, col = x1 / BOXSIZE;
 			if ((row < 0 || row >= map.rows) || (col < 0 || col >= map.cols))
 				hit = 1;
-			else if (map.layout[row][col] != 0)
+			else if (map.layout[row][col] != 0 && map.layout[row][col] != 5)
 				hit = 1;
 		}
 		else
@@ -91,7 +91,7 @@ float calc_impact_col(SDL_Player *player,map_t map)
 			row = y1 / BOXSIZE, col = x1 / BOXSIZE;
 			if ((row < 0 || row >= map.rows) || (col < 0 || col >= map.cols))
 				hit = 1;
-			else if (map.layout[row][col - 1] != 0)
+			else if (map.layout[row][col - 1] != 0 && map.layout[row][col - 1] != 5)
 				hit = 1;
 		}
 		i++;

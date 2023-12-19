@@ -34,14 +34,14 @@ map_t read_file(FILE *fp)
 
 	map = malloc(sizeof(map_t));
 	map->rows = count_rows(fp) - 1;
-	map->cols = 10;
 	map->layout = malloc(sizeof(int *) * (map->rows + 1));
 
 	for (i = 0; i < map->rows; i++)
 	{
 		 if (getline(&line, &line_count, fp) == -1)
 		 	break;
-		map->layout[i] = malloc(sizeof(int) * strlen(line));
+        map->cols = strlen(line) - 1;
+		map->layout[i] = malloc(sizeof(int) * (strlen(line)));
 		for (j = 0; j < strlen(line) - 1; j++)
 		{
 			map->layout[i][j] = line[j] - '0';

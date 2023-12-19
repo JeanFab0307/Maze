@@ -16,9 +16,9 @@ int init_instance(SDL_Instance *instance)
 		return (1);
 	}
 	/* Create a new Window instance */
-	instance->window = SDL_CreateWindow("SDL \\o/", SDL_WINDOWPOS_CENTERED,
+	instance->window = SDL_CreateWindow("The Maze", SDL_WINDOWPOS_CENTERED,
 					    SDL_WINDOWPOS_CENTERED,
-					    1260, 720, 0);
+					    SCREENWIDTH, SCREENHEIGHT, 0);
 	if (instance->window == NULL)
 	{
 		fprintf(stderr, "SDL_CreateWindow Error: %s\n",
@@ -38,6 +38,7 @@ int init_instance(SDL_Instance *instance)
 		SDL_Quit();
 		return (1);
 	}
+    instance->bmp = NULL;
 	return (0);
 }
 
@@ -49,8 +50,8 @@ int init_instance(SDL_Instance *instance)
  */
 void init_player(SDL_Player *player, float x, float y, float angle, float FOV)
 {
-	player->x = x * BOXSIZE;
-	player->y = y * BOXSIZE;
+	player->x = (x - 0.5) * BOXSIZE;
+	player->y = (y - 0.5) * BOXSIZE;
 	player->angle = angle;
 	player->FOV = FOV;
 }

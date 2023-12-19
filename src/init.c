@@ -68,6 +68,7 @@ void set_color(SDL_Instance *instance, char *color)
 		{"white", {255, 255, 255, 255}},
 		{"purple", {127, 0, 255, 255}},
 		{"dark green", {0, 51, 0, 255}},
+        {"brown", {90, 19, 19, 255}},
 		{"black", {0, 0, 0, 255}},
 		{NULL, {0, 0, 0, 255}}
 		};

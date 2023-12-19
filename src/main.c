@@ -67,7 +67,7 @@ void exit_game(SDL_Player *player, status_t *status, map_t map)
 	int row, col;
 
 	row = player->x / BOXSIZE;
-	col = player->x / BOXSIZE;
+	col = player->y / BOXSIZE;
 	if (map.layout[row][col] == 5)
 		status->lvl += 1;
 }

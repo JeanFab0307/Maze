@@ -78,6 +78,6 @@ void draw_line(SDL_Instance instance, double lineHeight, int lineX)
 	SDL_RenderDrawLineF(instance.renderer, lineX, start, lineX, end);
 	set_color(&instance, "blue");
 	SDL_RenderDrawLineF(instance.renderer, lineX, 0, lineX, start);
-	set_color(&instance, "purple");
+	set_color(&instance, "brown");
 	SDL_RenderDrawLineF(instance.renderer, lineX, end, lineX, SCREENHEIGHT);
 }
